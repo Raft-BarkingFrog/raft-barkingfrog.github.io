@@ -24,7 +24,7 @@ function draw() {
         const text = chars.charAt(Math.floor(Math.random() * chars.length));
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
+            drops[x] = 0;
         }
         drops[i]++;
     }
@@ -2030,3 +2030,96 @@ const layers = [
         `
     }
 ];
+
+// Infinite Scroll and Lazy Loading
+const layerContainer = document.getElementById('layer-container');
+const loading = document.getElementById('loading');
+let currentLayerIndex = 0;
+
+// Debugging: Log layers array length to confirm it's populated
+console.log('Layers array length:', layers.length);
+
+// Fallback: Display message if layers array is empty
+if (!layers || layers.length === 0) {
+    layerContainer.innerHTML = '<p style="text-align: center;">No layers available. Please check the data source.</p>';
+    loading.style.display = 'none'; // Hide loading spinner
+    console.warn('Layers array is empty or undefined. Check script.js.');
+} else {
+    // Initial load of layers
+    loadMoreLayers();
+}
+
+function loadMoreLayers() {
+    console.log('Loading more layers... Current index:', currentLayerIndex);
+    loading.classList.add('active');
+
+    const fragment = document.createDocumentFragment();
+    const endIndex = Math.min(currentLayerIndex + 5, layers.length);
+
+    for (let i = currentLayerIndex; i < endIndex; i++) {
+        const layer = layers[i];
+        const div = document.createElement('div');
+        div.className = 'layer-card';
+        div.innerHTML = `
+            <h3 class="layer-title">${layer.title}</h3>
+            <div class="layer-content">${layer.content}</div>
+        `;
+        fragment.appendChild(div);
+    }
+
+    layerContainer.appendChild(fragment);
+
+    // Re-attach event listeners using event delegation
+    layerContainer.querySelectorAll('.layer-title').forEach(title => {
+        title.removeEventListener('click', toggleLayer); // Prevent duplicate listeners
+        title.addEventListener('click', toggleLayer);
+    });
+
+    currentLayerIndex = endIndex;
+    console.log('Loaded layers up to index:', currentLayerIndex);
+
+    // Hide loading spinner
+    loading.classList.remove('active');
+
+    // Ensure button is visible if more layers can be loaded
+    const scrollButton = document.getElementById('scroll-next');
+    scrollButton.style.display = currentLayerIndex < layers.length ? 'block' : 'none';
+}
+
+function toggleLayer(event) {
+    const title = event.currentTarget;
+    const content = title.nextElementSibling;
+    content.classList.toggle('active');
+    title.classList.toggle('active');
+}
+
+// Infinite scroll detection
+window.addEventListener('scroll', () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 300 && currentLayerIndex < layers.length) {
+        console.log('Infinite scroll triggered. Loading more layers...');
+        loadMoreLayers();
+    }
+});
+
+// Smooth Scrolling for Navbar
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
+
+// Auto-Scroll to Next Layer
+const scrollNextButton = document.getElementById('scroll-next');
+scrollNextButton.addEventListener('click', () => {
+    console.log('Scroll to Next Layer clicked. Current index:', currentLayerIndex);
+    const cards = document.querySelectorAll('.layer-card');
+    const nextCard = cards[currentLayerIndex - 1] || document.getElementById('layers');
+    if (nextCard) {
+        nextCard.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        console.warn('No next card to scroll to. Total cards:', cards.length);
+    }
+});
