@@ -24,7 +24,7 @@ function draw() {
         const text = chars.charAt(Math.floor(Math.random() * chars.length));
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[x] = 0;
+            drops[i] = 0; // Fixed: Changed 'x' to 'i'
         }
         drops[i]++;
     }
