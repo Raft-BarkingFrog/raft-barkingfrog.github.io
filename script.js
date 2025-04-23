@@ -2037,6 +2037,7 @@ const loading = document.getElementById('loading');
 let currentLayerIndex = 0;
 let isTransitioning = false; // Prevent multiple transitions at once
 let lastScrollTime = 0; // Debounce scroll events
+let scrollDelta = 0; // Accumulate scroll delta for smoother transitions
 
 // Debugging: Log layers array length to confirm it's populated
 console.log('Layers array length:', layers.length);
@@ -2078,6 +2079,7 @@ function updateLayerContent(index) {
         currentLayerIndex = index;
         console.log('Updated layer to index:', currentLayerIndex);
         isTransitioning = false; // Allow new transitions
+        scrollDelta = 0; // Reset accumulated delta after transition
     }, 300); // Match the CSS transition duration (0.3s)
 }
 
@@ -2086,16 +2088,21 @@ window.addEventListener('wheel', (event) => {
     if (isTransitioning) return; // Prevent multiple transitions
 
     const now = Date.now();
-    if (now - lastScrollTime < 500) return; // Debounce: 500ms between scrolls
+    if (now - lastScrollTime < 300) {
+        // Accumulate scroll delta during debounce period
+        scrollDelta += event.deltaY;
+    } else {
+        scrollDelta = event.deltaY;
+    }
     lastScrollTime = now;
 
-    const deltaY = event.deltaY;
-    const direction = deltaY > 0 ? 'down' : 'up';
+    // Threshold for changing layers (e.g., 100px of accumulated scroll)
+    const scrollThreshold = 100;
 
-    if (direction === 'down' && currentLayerIndex < layers.length - 1) {
+    if (scrollDelta > scrollThreshold && currentLayerIndex < layers.length - 1) {
         isTransitioning = true;
         updateLayerContent(currentLayerIndex + 1);
-    } else if (direction === 'up' && currentLayerIndex > 0) {
+    } else if (scrollDelta < -scrollThreshold && currentLayerIndex > 0) {
         isTransitioning = true;
         updateLayerContent(currentLayerIndex - 1);
     }
