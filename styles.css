@@ -147,6 +147,7 @@ body {
 .layer-card {
     width: 80%;
     max-width: 800px;
+    height: 500px; /* Fixed height to prevent jumping */
     background: rgba(0, 0, 0, 0.9);
     border: 2px solid #0f0;
     border-radius: 12px;
@@ -154,7 +155,7 @@ body {
     opacity: 0;
     transform-origin: center center;
     transform: rotateY(90deg);
-    transition: opacity 0.3s ease, transform 0.3s ease; /* Snappier animation (0.5s to 0.3s) */
+    transition: opacity 0.3s ease, transform 0.3s ease;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
     visibility: hidden;
     display: flex;
@@ -190,6 +191,7 @@ body {
 .layer-content {
     padding: 2rem;
     font-size: 1.2rem;
+    flex-grow: 1; /* Allow content to fill the space */
 }
 
 .layer-content ul {
@@ -257,6 +259,7 @@ body {
     }
     .layer-card {
         width: 90%;
+        height: 400px; /* Smaller fixed height for mobile */
     }
     .content {
         padding: 2rem 1rem;
