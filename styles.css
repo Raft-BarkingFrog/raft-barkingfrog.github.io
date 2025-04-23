@@ -8,7 +8,7 @@ body {
     font-family: 'Source Code Pro', monospace;
     background: #000;
     color: #0f0;
-    line-height: 1.6;
+    line-height: 1.8; /* Increased for better readability */
     position: relative;
     overflow-x: hidden;
 }
@@ -17,19 +17,32 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
-    background: rgba(0, 0, 0, 0.8);
+    padding: 1.5rem 2rem; /* Slightly more padding for breathing room */
+    background: rgba(0, 0, 0, 0.9); /* Darker, more solid background */
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid #0f0;
+    border-bottom: 2px solid #0f0; /* Thicker, glowing border */
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); /* Glowing shadow */
+    transition: background 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.navbar:hover {
+    background: rgba(0, 0, 0, 1); /* Fully opaque on hover */
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-size: 1.8rem; /* Larger logo for emphasis */
     font-weight: 700;
     text-transform: uppercase;
+    text-shadow: 0 0 10px #0f0; /* Glowing effect */
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05); /* Slight scale-up on hover */
+    text-shadow: 0 0 20px #0f0; /* Brighter glow */
 }
 
 .nav-links {
@@ -38,18 +51,19 @@ body {
 }
 
 .nav-links li {
-    margin-left: 2rem;
+    margin-left: 2.5rem; /* More spacing between links */
 }
 
 .nav-links a {
     text-decoration: none;
     color: #0f0;
-    font-weight: 400;
-    transition: color 0.3s;
+    font-weight: 500; /* Slightly bolder for clarity */
+    transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .nav-links a:hover {
-    color: #0ff;
+    color: #0ff; /* Cyan highlight on hover */
+    text-shadow: 0 0 10px #0ff; /* Glowing cyan shadow */
 }
 
 #matrix {
@@ -59,31 +73,37 @@ body {
     width: 100%;
     height: 100%;
     z-index: -1;
-    opacity: 0.15; /* Subtle digital rain for readability */
+    opacity: 0.2; /* Slightly increased for more visibility */
 }
 
 .content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 3rem 2rem; /* More padding for content breathing room */
     position: relative;
     z-index: 1;
 }
 
 .section {
-    margin-bottom: 4rem;
+    margin-bottom: 5rem; /* More spacing between sections */
 }
 
 .intro h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+    font-size: 3rem; /* Larger heading for impact */
+    margin-bottom: 1.5rem;
     text-align: center;
-    text-shadow: 0 0 10px #0f0;
+    text-shadow: 0 0 15px #0f0; /* Stronger glow */
+    transition: text-shadow 0.3s ease;
+}
+
+.intro h1:hover {
+    text-shadow: 0 0 25px #0f0; /* Brighter glow on hover */
 }
 
 .intro p {
-    font-size: 1.2rem;
+    font-size: 1.3rem; /* Slightly larger for readability */
     margin-bottom: 2rem;
+    text-align: justify; /* Justified for a cleaner look */
 }
 
 .intro ul {
@@ -91,58 +111,78 @@ body {
 }
 
 .intro ul li {
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: rgba(0, 255, 0, 0.1);
+    margin-bottom: 1.5rem; /* More spacing between list items */
+    padding: 1.5rem; /* More padding inside list items */
+    background: rgba(0, 255, 0, 0.15); /* Slightly lighter background */
     border: 1px solid #0f0;
-    border-radius: 5px;
+    border-radius: 8px; /* Softer corners */
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.intro ul li:hover {
+    background: rgba(0, 255, 0, 0.25); /* Brighter on hover */
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5); /* Glowing shadow */
 }
 
 .layers h2 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
+    font-size: 2.5rem; /* Larger heading */
+    margin-bottom: 2.5rem;
     text-align: center;
-    text-shadow: 0 0 10px #0f0;
+    text-shadow: 0 0 15px #0f0; /* Stronger glow */
+    transition: text-shadow 0.3s ease;
+}
+
+.layers h2:hover {
+    text-shadow: 0 0 25px #0f0; /* Brighter glow on hover */
 }
 
 .layer-card {
-    margin-bottom: 1rem;
-    background: rgba(0, 0, 0, 0.7);
+    margin-bottom: 1.5rem; /* More spacing between cards */
+    background: rgba(0, 0, 0, 0.8); /* Darker, more solid background */
     border: 1px solid #0f0;
-    border-radius: 5px;
+    border-radius: 8px; /* Softer corners */
     overflow: hidden;
-    transition: transform 0.3s;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .layer-card:hover {
-    transform: scale(1.02);
+    transform: scale(1.03); /* Slightly larger scale on hover */
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); /* Glowing shadow */
 }
 
 .layer-title {
-    font-size: 1.5rem;
-    padding: 1rem;
+    font-size: 1.6rem; /* Larger title for hierarchy */
+    padding: 1.2rem; /* More padding */
     background: #0f0;
     color: #000;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.layer-title:hover {
+    background: #0ff; /* Cyan on hover */
+    color: #000;
 }
 
 .layer-title::after {
     content: '\f107';
     font-family: 'Font Awesome 6 Free';
     font-weight: 900;
+    transition: transform 0.3s ease;
 }
 
 .layer-title.active::after {
     content: '\f106';
+    transform: rotate(180deg); /* Smooth rotation for toggle */
 }
 
 .layer-content {
     display: none;
-    padding: 1rem;
-    font-size: 1rem; /* Smaller font for dense content */
+    padding: 1.5rem; /* More padding for content */
+    font-size: 1.1rem; /* Slightly larger for readability */
 }
 
 .layer-content.active {
@@ -154,19 +194,20 @@ body {
 }
 
 .layer-content ul li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem; /* More spacing between list items */
 }
 
 .layer-content ul li ul {
-    margin-left: 1.5rem;
+    margin-left: 2rem; /* Deeper indentation for sublists */
     margin-top: 0.5rem;
 }
 
 .loading {
     text-align: center;
-    padding: 1rem;
-    font-size: 1.2rem;
-    display: none; /* Hidden by default, shown during loading */
+    padding: 1.5rem;
+    font-size: 1.3rem; /* Larger for visibility */
+    display: none;
+    text-shadow: 0 0 10px #0f0; /* Glowing effect */
 }
 
 .loading.active {
@@ -175,41 +216,81 @@ body {
 
 .scroll-button {
     display: block;
-    margin: 2rem auto;
-    padding: 0.8rem 2rem;
+    margin: 3rem auto; /* More margin for spacing */
+    padding: 1rem 2.5rem; /* Larger padding for better click area */
     background: #0f0;
     color: #000;
     border: none;
-    border-radius: 5px;
-    font-size: 1.2rem;
+    border-radius: 8px; /* Softer corners */
+    font-size: 1.3rem; /* Larger text */
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .scroll-button:hover {
-    background: #0ff;
+    background: #0ff; /* Cyan on hover */
+    transform: scale(1.05); /* Slight scale-up */
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5); /* Glowing shadow */
+}
+
+.scroll-button:active {
+    transform: scale(0.95); /* Slight press effect */
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
-        gap: 1rem;
+        gap: 1.5rem; /* More gap for mobile */
+        padding: 1rem;
     }
     .nav-links {
         flex-direction: column;
         gap: 1rem;
     }
+    .nav-links li {
+        margin-left: 0;
+    }
     .intro h1 {
-        font-size: 1.8rem;
+        font-size: 2.2rem; /* Smaller heading for mobile */
+    }
+    .intro p {
+        font-size: 1.1rem; /* Smaller paragraph */
+    }
+    .intro ul li {
+        padding: 1rem;
     }
     .layers h2 {
-        font-size: 1.5rem;
+        font-size: 1.8rem; /* Smaller heading */
     }
     .layer-title {
-        font-size: 1.2rem;
+        font-size: 1.3rem; /* Smaller title */
     }
     .layer-content {
-        font-size: 0.9rem;
+        font-size: 1rem; /* Slightly smaller content */
+        padding: 1rem;
+    }
+    .scroll-button {
+        padding: 0.8rem 2rem;
+        font-size: 1.1rem;
+    }
+    .content {
+        padding: 2rem 1rem; /* Less padding on mobile */
+    }
+}
+
+/* High-Resolution Devices */
+@media (min-width: 1200px) {
+    .intro h1 {
+        font-size: 3.5rem;
+    }
+    .layers h2 {
+        font-size: 3rem;
+    }
+    .layer-title {
+        font-size: 1.8rem;
+    }
+    .layer-content {
+        font-size: 1.2rem;
     }
 }
