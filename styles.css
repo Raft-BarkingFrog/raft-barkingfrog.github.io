@@ -138,7 +138,6 @@ body {
 
 #layer-container {
     position: relative;
-    height: 400px; /* Fixed height for the graphic box */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -148,7 +147,6 @@ body {
 .layer-card {
     width: 80%;
     max-width: 800px;
-    height: 100%; /* Match container height */
     background: rgba(0, 0, 0, 0.9);
     border: 2px solid #0f0;
     border-radius: 12px;
@@ -156,7 +154,7 @@ body {
     opacity: 0;
     transform-origin: center center;
     transform: rotateY(90deg);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Snappier animation (0.5s to 0.3s) */
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
     visibility: hidden;
     display: flex;
@@ -192,8 +190,6 @@ body {
 .layer-content {
     padding: 2rem;
     font-size: 1.2rem;
-    flex-grow: 1; /* Allow content to grow within the fixed height */
-    overflow-y: auto; /* Scroll if content overflows */
 }
 
 .layer-content ul {
@@ -224,32 +220,6 @@ body {
 
 .loading.active {
     display: block;
-}
-
-.scroll-button {
-    display: block;
-    padding: 1rem 2.5rem;
-    background: #0f0;
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.3rem;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-}
-
-.scroll-button:hover {
-    background: #0ff;
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-}
-
-.scroll-button:active {
-    transform: scale(0.95);
 }
 
 /* Responsive Design */
@@ -287,19 +257,9 @@ body {
     }
     .layer-card {
         width: 90%;
-        height: 300px; /* Smaller height for mobile */
-    }
-    .scroll-button {
-        padding: 0.8rem 2rem;
-        font-size: 1.1rem;
-        bottom: 10px;
-        right: 10px;
     }
     .content {
         padding: 2rem 1rem;
-    }
-    #layer-container {
-        height: 300px;
     }
 }
 
