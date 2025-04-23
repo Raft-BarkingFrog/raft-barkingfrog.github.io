@@ -2031,12 +2031,12 @@ const layers = [
     }
 ];
 
-// Layer Management and Infinite Scrolling with Rolodex Effect
+// Layer Management with Fixed Graphic Box and Content Replacement
 const layerContainer = document.getElementById('layer-container');
 const loading = document.getElementById('loading');
 const scrollNextButton = document.getElementById('scroll-next');
 let currentLayerIndex = 0;
-let loadedLayers = [];
+let isTransitioning = false; // Prevent multiple transitions at once
 
 // Debugging: Log layers array length to confirm it's populated
 console.log('Layers array length:', layers.length);
@@ -2047,93 +2047,70 @@ if (!layers || layers.length === 0) {
     loading.style.display = 'none';
     scrollNextButton.style.display = 'none';
     console.warn('Layers array is empty or undefined. Check script.js.');
+    window.removeEventListener('scroll', handleScroll); // Remove scroll listener if no layers
 } else {
-    // Initial load of layers
-    loadInitialLayers();
+    // Create a single layer card
+    const layerCard = document.createElement('div');
+    layerCard.className = 'layer-card';
+    layerContainer.appendChild(layerCard);
+
+    // Initial load of the first layer
+    updateLayerContent(0);
 }
 
-// Load initial layers to fill the viewport
-function loadInitialLayers() {
-    // Load the first layer
-    loadLayer(0);
-}
+// Update the content of the single layer card
+function updateLayerContent(index) {
+    if (index >= layers.length || index < 0) return; // Out of bounds
 
-// Load a single layer at the specified index
-function loadLayer(index) {
-    if (index >= layers.length) return; // No more layers to load
+    const layer = layers[index];
+    const layerCard = layerContainer.querySelector('.layer-card');
 
-    // Check if the layer card already exists
-    let layerCard = loadedLayers[index];
-    if (!layerCard) {
-        // Create new layer card
-        const layer = layers[index];
-        layerCard = document.createElement('div');
-        layerCard.className = 'layer-card';
+    // Trigger the flipping animation
+    layerCard.classList.remove('active');
+    layerCard.classList.add('inactive');
+
+    setTimeout(() => {
+        // Update content after the flip-out animation
         layerCard.innerHTML = `
             <h3 class="layer-title">${layer.title}</h3>
             <div class="layer-content">${layer.content}</div>
         `;
-        layerContainer.appendChild(layerCard);
-        loadedLayers[index] = layerCard;
-    }
-
-    console.log('Loaded layer:', index);
+        layerCard.classList.remove('inactive');
+        layerCard.classList.add('active');
+        currentLayerIndex = index;
+        console.log('Updated layer to index:', currentLayerIndex);
+        isTransitioning = false; // Allow new transitions
+    }, 500); // Match the CSS transition duration (0.5s)
 }
 
-// Intersection Observer to detect when a card enters the viewport
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const index = parseInt(entry.target.dataset.index, 10);
-            // Mark the card as active (visible with animation)
-            entry.target.classList.remove('inactive');
-            entry.target.classList.add('active');
-            currentLayerIndex = Math.max(currentLayerIndex, index);
+// Handle scrolling to change layers
+let lastScrollTop = 0;
+function handleScroll() {
+    if (isTransitioning) return; // Prevent multiple transitions
 
-            // Load the next layer if not already loaded
-            if (!loadedLayers[index + 1] && index + 1 < layers.length) {
-                loadLayer(index + 1);
-            }
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollDirection = scrollTop > lastScrollTop ? 'down' : 'up';
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
 
-            console.log('Layer in view:', index, 'Current index:', currentLayerIndex);
-        } else {
-            // Mark the card as inactive when out of view
-            entry.target.classList.remove('active');
-            entry.target.classList.add('inactive');
-        }
-    });
-}, {
-    root: null,
-    threshold: 0.5 // Trigger when 50% of the card is visible
-});
+    const containerRect = layerContainer.getBoundingClientRect();
+    const containerBottom = containerRect.bottom;
 
-// Observe all loaded cards
-function observeCards() {
-    loadedLayers.forEach((card, index) => {
-        if (card) {
-            card.dataset.index = index; // Store index for reference
-            observer.observe(card);
-        }
-    });
+    // Thresholds for changing layers
+    const scrollThreshold = window.innerHeight * 0.5; // Change layer when scrolled 50% of viewport height
+
+    if (scrollDirection === 'down' && containerBottom < scrollThreshold && currentLayerIndex < layers.length - 1) {
+        isTransitioning = true;
+        updateLayerContent(currentLayerIndex + 1);
+    } else if (scrollDirection === 'up' && containerRect.top > window.innerHeight - scrollThreshold && currentLayerIndex > 0) {
+        isTransitioning = true;
+        updateLayerContent(currentLayerIndex - 1);
+    }
 }
 
-// Initial observation after loading the first layer
-observeCards();
-
-// Load more layers as the user scrolls
-window.addEventListener('scroll', () => {
-    const lastLoadedIndex = loadedLayers.length - 1;
-    if (lastLoadedIndex >= layers.length - 1) return; // No more layers to load
-
-    const lastCard = loadedLayers[lastLoadedIndex];
-    if (!lastCard) return;
-
-    const rect = lastCard.getBoundingClientRect();
-    if (rect.top < window.innerHeight && !loadedLayers[lastLoadedIndex + 1]) {
-        loadLayer(lastLoadedIndex + 1);
-        observeCards(); // Observe the newly loaded card
-    }
-});
+// Add scroll event listener if layers exist
+if (layers && layers.length > 0) {
+    window.addEventListener('scroll', handleScroll);
+}
 
 // Smooth Scrolling for Navbar
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -2148,15 +2125,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Auto-Scroll to Next Layer (Button Navigation)
 scrollNextButton.addEventListener('click', () => {
     console.log('Scroll to Next Layer clicked. Current index:', currentLayerIndex);
-    if (currentLayerIndex < layers.length - 1) {
-        const nextIndex = currentLayerIndex + 1;
-        if (!loadedLayers[nextIndex]) {
-            loadLayer(nextIndex);
-            observeCards();
-        }
-        const nextCard = loadedLayers[nextIndex];
-        if (nextCard) {
-            nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }
+    if (isTransitioning || currentLayerIndex >= layers.length - 1) return;
+    isTransitioning = true;
+    updateLayerContent(currentLayerIndex + 1);
 });
