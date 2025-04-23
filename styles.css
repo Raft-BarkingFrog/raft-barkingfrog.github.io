@@ -126,7 +126,7 @@ body {
 
 .layers h2 {
     font-size: 2.5rem;
-    margin-bottom: 1rem; /* Reduced spacing */
+    margin-bottom: 1rem;
     text-align: center;
     text-shadow: 0 0 15px #0f0;
     transition: text-shadow 0.3s ease;
@@ -138,16 +138,17 @@ body {
 
 #layer-container {
     position: relative;
+    height: 400px; /* Fixed height for the graphic box */
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 100vh; /* Space cards to ensure only one is visible in viewport */
-    padding-bottom: 100vh; /* Ensure enough space for scrolling */
+    padding: 1rem;
 }
 
 .layer-card {
     width: 80%;
     max-width: 800px;
+    height: 100%; /* Match container height */
     background: rgba(0, 0, 0, 0.9);
     border: 2px solid #0f0;
     border-radius: 12px;
@@ -158,7 +159,8 @@ body {
     transition: opacity 0.5s ease, transform 0.5s ease;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
     visibility: hidden;
-    min-height: 60vh; /* Ensure consistent height for centering */
+    display: flex;
+    flex-direction: column;
 }
 
 .layer-card.active {
@@ -190,6 +192,8 @@ body {
 .layer-content {
     padding: 2rem;
     font-size: 1.2rem;
+    flex-grow: 1; /* Allow content to grow within the fixed height */
+    overflow-y: auto; /* Scroll if content overflows */
 }
 
 .layer-content ul {
@@ -283,7 +287,7 @@ body {
     }
     .layer-card {
         width: 90%;
-        min-height: 50vh;
+        height: 300px; /* Smaller height for mobile */
     }
     .scroll-button {
         padding: 0.8rem 2rem;
@@ -293,6 +297,9 @@ body {
     }
     .content {
         padding: 2rem 1rem;
+    }
+    #layer-container {
+        height: 300px;
     }
 }
 
