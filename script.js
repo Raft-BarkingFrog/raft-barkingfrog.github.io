@@ -1131,7 +1131,7 @@ const layers = [
     },
     {
         title: "Layer 111: Advanced Surveillance and Control",
-        content  content: `
+        content: `
             <ul>
                 <li><strong>Mass Data Surveillance:</strong> Utilizing mass data surveillance technologies to monitor financial transactions, track illicit activities, and gather intelligence.</li>
                 <li><strong>Facial Recognition Systems:</strong> Implementing facial recognition systems for security, law enforcement, and monitoring public spaces.</li>
