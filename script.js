@@ -24,7 +24,7 @@ function draw() {
         const text = chars.charAt(Math.floor(Math.random() * chars.length));
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0; // Fixed: Changed 'x' to 'i'
+            drops[i] = 0; // Fixed in previous response
         }
         drops[i]++;
     }
@@ -2031,10 +2031,11 @@ const layers = [
     }
 ];
 
-// Infinite Scroll and Lazy Loading
+// Layer Management and Rolodex-Style Scrolling
 const layerContainer = document.getElementById('layer-container');
 const loading = document.getElementById('loading');
 let currentLayerIndex = 0;
+let loadedLayers = [];
 
 // Debugging: Log layers array length to confirm it's populated
 console.log('Layers array length:', layers.length);
@@ -2042,64 +2043,80 @@ console.log('Layers array length:', layers.length);
 // Fallback: Display message if layers array is empty
 if (!layers || layers.length === 0) {
     layerContainer.innerHTML = '<p style="text-align: center;">No layers available. Please check the data source.</p>';
-    loading.style.display = 'none'; // Hide loading spinner
+    loading.style.display = 'none';
     console.warn('Layers array is empty or undefined. Check script.js.');
 } else {
-    // Initial load of layers
-    loadMoreLayers();
+    // Initial load of the first layer
+    loadLayer(0);
 }
 
-function loadMoreLayers() {
-    console.log('Loading more layers... Current index:', currentLayerIndex);
-    loading.classList.add('active');
+function loadLayer(index) {
+    if (index >= layers.length) return; // No more layers to load
 
-    const fragment = document.createDocumentFragment();
-    const endIndex = Math.min(currentLayerIndex + 5, layers.length);
+    // Remove 'active' class from previously active card
+    const prevActive = document.querySelector('.layer-card.active');
+    if (prevActive) {
+        prevActive.classList.remove('active');
+        prevActive.classList.add('inactive');
+    }
 
-    for (let i = currentLayerIndex; i < endIndex; i++) {
-        const layer = layers[i];
-        const div = document.createElement('div');
-        div.className = 'layer-card';
-        div.innerHTML = `
+    // Check if the layer card already exists
+    let layerCard = loadedLayers[index];
+    if (!layerCard) {
+        // Create new layer card
+        const layer = layers[index];
+        layerCard = document.createElement('div');
+        layerCard.className = 'layer-card';
+        layerCard.innerHTML = `
             <h3 class="layer-title">${layer.title}</h3>
             <div class="layer-content">${layer.content}</div>
         `;
-        fragment.appendChild(div);
+        layerContainer.appendChild(layerCard);
+        loadedLayers[index] = layerCard;
     }
 
-    layerContainer.appendChild(fragment);
+    // Make the current layer card active
+    layerCard.classList.remove('inactive');
+    layerCard.classList.add('active');
+    layerCard.classList.add('active'); // Ensure animation triggers
+    console.log('Loaded layer:', index);
+}
 
-    // Re-attach event listeners using event delegation
-    layerContainer.querySelectorAll('.layer-title').forEach(title => {
-        title.removeEventListener('click', toggleLayer); // Prevent duplicate listeners
-        title.addEventListener('click', toggleLayer);
+function showNextLayer() {
+    if (currentLayerIndex < layers.length - 1) {
+        currentLayerIndex++;
+        loadLayer(currentLayerIndex);
+        // Scroll the layer into view
+        const activeCard = document.querySelector('.layer-card.active');
+        if (activeCard) {
+            activeCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+}
+
+// Intersection Observer to detect when the active card is out of view
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting && entry.target.classList.contains('active') && currentLayerIndex < layers.length - 1) {
+            // Load the next layer when the current one is scrolled out of view
+            showNextLayer();
+        }
     });
-
-    currentLayerIndex = endIndex;
-    console.log('Loaded layers up to index:', currentLayerIndex);
-
-    // Hide loading spinner
-    loading.classList.remove('active');
-
-    // Ensure button is visible if more layers can be loaded
-    const scrollButton = document.getElementById('scroll-next');
-    scrollButton.style.display = currentLayerIndex < layers.length ? 'block' : 'none';
-}
-
-function toggleLayer(event) {
-    const title = event.currentTarget;
-    const content = title.nextElementSibling;
-    content.classList.toggle('active');
-    title.classList.toggle('active');
-}
-
-// Infinite scroll detection
-window.addEventListener('scroll', () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 300 && currentLayerIndex < layers.length) {
-        console.log('Infinite scroll triggered. Loading more layers...');
-        loadMoreLayers();
-    }
+}, {
+    root: null,
+    threshold: 0.1 // Trigger when 10% of the card is still visible
 });
+
+// Observe the active card
+function observeActiveCard() {
+    const activeCard = document.querySelector('.layer-card.active');
+    if (activeCard) {
+        observer.observe(activeCard);
+    }
+}
+
+// Initial observation
+observeActiveCard();
 
 // Smooth Scrolling for Navbar
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -2115,11 +2132,5 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 const scrollNextButton = document.getElementById('scroll-next');
 scrollNextButton.addEventListener('click', () => {
     console.log('Scroll to Next Layer clicked. Current index:', currentLayerIndex);
-    const cards = document.querySelectorAll('.layer-card');
-    const nextCard = cards[currentLayerIndex - 1] || document.getElementById('layers');
-    if (nextCard) {
-        nextCard.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        console.warn('No next card to scroll to. Total cards:', cards.length);
-    }
+    showNextLayer();
 });
