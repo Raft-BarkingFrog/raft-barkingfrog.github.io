@@ -2031,7 +2031,7 @@ const layers = [
     }
 ];
 
-// Layer Management with Fixed Graphic Box and Mousewheel Scrolling
+// Layer Management with Dynamic Height Adjustment and Mousewheel Scrolling
 const layerContainer = document.getElementById('layer-container');
 const loading = document.getElementById('loading');
 let currentLayerIndex = 0;
@@ -2057,19 +2057,37 @@ if (!layers || layers.length === 0) {
     updateLayerContent(0);
 }
 
-// Update the content of the single layer card
+// Update the content of the single layer card with dynamic height adjustment
 function updateLayerContent(index) {
     if (index >= layers.length || index < 0) return; // Out of bounds
 
     const layer = layers[index];
     const layerCard = layerContainer.querySelector('.layer-card');
 
+    // Create a temporary element to measure the new content height
+    const tempCard = document.createElement('div');
+    tempCard.className = 'layer-card';
+    tempCard.style.visibility = 'hidden';
+    tempCard.style.position = 'absolute';
+    tempCard.style.width = layerCard.offsetWidth + 'px'; // Match the current width
+    tempCard.innerHTML = `
+        <h3 class="layer-title">${layer.title}</h3>
+        <div class="layer-content">${layer.content}</div>
+    `;
+    document.body.appendChild(tempCard);
+    const newHeight = tempCard.offsetHeight;
+    document.body.removeChild(tempCard);
+
+    // Set the current height explicitly to start the transition
+    layerCard.style.height = layerCard.offsetHeight + 'px';
+
     // Trigger the flipping animation
     layerCard.classList.remove('active');
     layerCard.classList.add('inactive');
 
     setTimeout(() => {
-        // Update content after the flip-out animation
+        // Update height and content after the flip-out animation
+        layerCard.style.height = newHeight + 'px';
         layerCard.innerHTML = `
             <h3 class="layer-title">${layer.title}</h3>
             <div class="layer-content">${layer.content}</div>
@@ -2077,7 +2095,7 @@ function updateLayerContent(index) {
         layerCard.classList.remove('inactive');
         layerCard.classList.add('active');
         currentLayerIndex = index;
-        console.log('Updated layer to index:', currentLayerIndex);
+        console.log('Updated layer to index:', currentLayerIndex, 'New height:', newHeight);
         isTransitioning = false; // Allow new transitions
         scrollDelta = 0; // Reset accumulated delta after transition
     }, 300); // Match the CSS transition duration (0.3s)
