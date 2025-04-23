@@ -142,14 +142,13 @@ body {
     justify-content: center;
     align-items: center;
     padding: 1rem;
-    min-height: 300px; /* Minimum height to reserve space */
+    min-height: 600px; /* Increased to match taller layer card */
 }
 
 .layer-card {
-    width: 80%;
-    max-width: 800px;
-    min-height: 300px; /* Minimum height for small content */
-    max-height: 600px; /* Maximum height to prevent excessive growth */
+    width: 100%; /* Full width of the content container */
+    min-height: 600px; /* Taller for more content */
+    max-height: 900px; /* Increased max height */
     height: auto; /* Allow dynamic height based on content */
     background: rgba(0, 0, 0, 0.9);
     border: 2px solid #0f0;
@@ -192,9 +191,16 @@ body {
 }
 
 .layer-content {
-    padding: 2rem;
-    font-size: 1.2rem;
+    padding: 0; /* Padding moved to content-wrapper */
     flex-grow: 1;
+    overflow-y: auto; /* Scrollbar if content exceeds max-height */
+}
+
+.layer-content .content-wrapper {
+    max-width: 800px; /* Constrain text width for readability */
+    margin: 0 auto; /* Center the content */
+    padding: 2rem; /* Add padding inside the centered wrapper */
+    text-align: left; /* Keep text left-aligned for readability */
 }
 
 .layer-content ul {
@@ -258,18 +264,21 @@ body {
     }
     .layer-content {
         font-size: 1rem;
-        padding: 1rem;
+    }
+    .layer-content .content-wrapper {
+        max-width: 90%; /* Fit mobile screens */
+        padding: 1rem; /* Reduced padding for mobile */
     }
     .layer-card {
-        width: 90%;
-        min-height: 250px;
-        max-height: 500px;
+        width: 100%; /* Full width on mobile */
+        min-height: 450px; /* Taller for mobile */
+        max-height: 700px; /* Increased max height for mobile */
     }
     .content {
         padding: 2rem 1rem;
     }
     #layer-container {
-        min-height: 250px;
+        min-height: 450px; /* Match taller layer card */
     }
 }
 
