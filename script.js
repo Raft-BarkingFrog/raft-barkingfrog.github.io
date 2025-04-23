@@ -2072,7 +2072,9 @@ function updateLayerContent(index) {
     tempCard.style.width = layerCard.offsetWidth + 'px'; // Match the current width
     tempCard.innerHTML = `
         <h3 class="layer-title">${layer.title}</h3>
-        <div class="layer-content">${layer.content}</div>
+        <div class="layer-content">
+            <div class="content-wrapper">${layer.content}</div>
+        </div>
     `;
     document.body.appendChild(tempCard);
     const newHeight = tempCard.offsetHeight;
@@ -2090,7 +2092,9 @@ function updateLayerContent(index) {
         layerCard.style.height = newHeight + 'px';
         layerCard.innerHTML = `
             <h3 class="layer-title">${layer.title}</h3>
-            <div class="layer-content">${layer.content}</div>
+            <div class="layer-content">
+                <div class="content-wrapper">${layer.content}</div>
+            </div>
         `;
         layerCard.classList.remove('inactive');
         layerCard.classList.add('active');
