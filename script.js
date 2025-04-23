@@ -2031,12 +2031,12 @@ const layers = [
     }
 ];
 
-// Layer Management with Fixed Graphic Box and Content Replacement
+// Layer Management with Fixed Graphic Box and Mousewheel Scrolling
 const layerContainer = document.getElementById('layer-container');
 const loading = document.getElementById('loading');
-const scrollNextButton = document.getElementById('scroll-next');
 let currentLayerIndex = 0;
 let isTransitioning = false; // Prevent multiple transitions at once
+let lastScrollTime = 0; // Debounce scroll events
 
 // Debugging: Log layers array length to confirm it's populated
 console.log('Layers array length:', layers.length);
@@ -2045,9 +2045,7 @@ console.log('Layers array length:', layers.length);
 if (!layers || layers.length === 0) {
     layerContainer.innerHTML = '<p style="text-align: center;">No layers available. Please check the data source.</p>';
     loading.style.display = 'none';
-    scrollNextButton.style.display = 'none';
     console.warn('Layers array is empty or undefined. Check script.js.');
-    window.removeEventListener('scroll', handleScroll); // Remove scroll listener if no layers
 } else {
     // Create a single layer card
     const layerCard = document.createElement('div');
@@ -2080,37 +2078,28 @@ function updateLayerContent(index) {
         currentLayerIndex = index;
         console.log('Updated layer to index:', currentLayerIndex);
         isTransitioning = false; // Allow new transitions
-    }, 500); // Match the CSS transition duration (0.5s)
+    }, 300); // Match the CSS transition duration (0.3s)
 }
 
-// Handle scrolling to change layers
-let lastScrollTop = 0;
-function handleScroll() {
+// Handle mousewheel scrolling to change layers
+window.addEventListener('wheel', (event) => {
     if (isTransitioning) return; // Prevent multiple transitions
 
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollDirection = scrollTop > lastScrollTop ? 'down' : 'up';
-    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+    const now = Date.now();
+    if (now - lastScrollTime < 500) return; // Debounce: 500ms between scrolls
+    lastScrollTime = now;
 
-    const containerRect = layerContainer.getBoundingClientRect();
-    const containerBottom = containerRect.bottom;
+    const deltaY = event.deltaY;
+    const direction = deltaY > 0 ? 'down' : 'up';
 
-    // Thresholds for changing layers
-    const scrollThreshold = window.innerHeight * 0.5; // Change layer when scrolled 50% of viewport height
-
-    if (scrollDirection === 'down' && containerBottom < scrollThreshold && currentLayerIndex < layers.length - 1) {
+    if (direction === 'down' && currentLayerIndex < layers.length - 1) {
         isTransitioning = true;
         updateLayerContent(currentLayerIndex + 1);
-    } else if (scrollDirection === 'up' && containerRect.top > window.innerHeight - scrollThreshold && currentLayerIndex > 0) {
+    } else if (direction === 'up' && currentLayerIndex > 0) {
         isTransitioning = true;
         updateLayerContent(currentLayerIndex - 1);
     }
-}
-
-// Add scroll event listener if layers exist
-if (layers && layers.length > 0) {
-    window.addEventListener('scroll', handleScroll);
-}
+});
 
 // Smooth Scrolling for Navbar
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -2120,12 +2109,4 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             behavior: 'smooth'
         });
     });
-});
-
-// Auto-Scroll to Next Layer (Button Navigation)
-scrollNextButton.addEventListener('click', () => {
-    console.log('Scroll to Next Layer clicked. Current index:', currentLayerIndex);
-    if (isTransitioning || currentLayerIndex >= layers.length - 1) return;
-    isTransitioning = true;
-    updateLayerContent(currentLayerIndex + 1);
 });
