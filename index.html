@@ -1,1 +1,35 @@
-hello
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Your Main Heading Here</h1>
+    <h2>Your Subheading Here</h2>
+    <a href="your-link.html">Your Link Text Here</a>
+    <div id="app"></div>
+    <script src="https://unpkg.com/webamp"></script>
+    <script>
+        const app = document.getElementById("app");
+        const webamp = new Webamp({
+            initialTracks: [
+                {
+                    metaData: {
+                        artist: "Artist Name",
+                        title: "Track Title"
+                    },
+                    url: "path/to/your/track.mp3",
+                    duration: 0
+                }
+            ],
+            initialSkin: {
+                url: "https://cdn.jsdelivr.net/gh/captbaritone/webamp@v1.1.0/skins/base-2.91.wsz"
+            }
+        });
+        webamp.renderWhenReady(app);
+    </script>
+</body>
+</html>
