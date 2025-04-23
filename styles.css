@@ -85,7 +85,7 @@ body {
 }
 
 .section {
-    margin-bottom: 5rem;
+    margin-bottom: 3rem;
 }
 
 .intro h1 {
@@ -126,7 +126,7 @@ body {
 
 .layers h2 {
     font-size: 2.5rem;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1rem; /* Reduced spacing */
     text-align: center;
     text-shadow: 0 0 15px #0f0;
     transition: text-shadow 0.3s ease;
@@ -138,44 +138,43 @@ body {
 
 #layer-container {
     position: relative;
-    min-height: 100vh; /* Ensure container takes up viewport height for scrolling */
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 100vh; /* Space cards to ensure only one is visible in viewport */
+    padding-bottom: 100vh; /* Ensure enough space for scrolling */
 }
 
 .layer-card {
-    position: absolute;
-    top: 50%; /* Center vertically */
-    left: 50%;
-    transform: translate(-50%, -50%); /* Center horizontally and vertically */
-    width: 80%; /* Larger card width */
-    max-width: 800px; /* Max width for larger screens */
+    width: 80%;
+    max-width: 800px;
     background: rgba(0, 0, 0, 0.9);
     border: 2px solid #0f0;
     border-radius: 12px;
     overflow: hidden;
-    opacity: 0; /* Hidden by default */
+    opacity: 0;
     transform-origin: center center;
+    transform: rotateY(90deg);
     transition: opacity 0.5s ease, transform 0.5s ease;
     box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-    visibility: hidden; /* Hidden until activated */
+    visibility: hidden;
+    min-height: 60vh; /* Ensure consistent height for centering */
 }
 
 .layer-card.active {
-    opacity: 1; /* Visible when active */
+    opacity: 1;
     visibility: visible;
-    transform: translate(-50%, -50%) rotateY(0deg); /* Flip into view */
+    transform: rotateY(0deg);
 }
 
 .layer-card.inactive {
-    opacity: 0; /* Fade out */
-    transform: translate(-50%, -50%) rotateY(90deg); /* Flip out */
+    opacity: 0;
+    transform: rotateY(90deg);
     visibility: hidden;
 }
 
 .layer-title {
-    font-size: 2rem; /* Larger title for emphasis */
+    font-size: 2rem;
     padding: 1.5rem;
     background: #0f0;
     color: #000;
@@ -225,7 +224,6 @@ body {
 
 .scroll-button {
     display: block;
-    margin: 3rem auto;
     padding: 1rem 2.5rem;
     background: #0f0;
     color: #000;
@@ -285,6 +283,7 @@ body {
     }
     .layer-card {
         width: 90%;
+        min-height: 50vh;
     }
     .scroll-button {
         padding: 0.8rem 2rem;
