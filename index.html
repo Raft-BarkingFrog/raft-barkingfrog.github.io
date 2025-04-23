@@ -39,43 +39,9 @@
         <!-- Layers Section -->
         <section id="layers" class="section layers">
             <h2>Layers of Financial Instruments</h2>
-            <div id="layer-container">
-                <!-- Layer 1 -->
-                <div class="layer-card">
-                    <h3 class="layer-title">Layer 1: Basic Instruments</h3>
-                    <div class="layer-content">
-                        <ul>
-                            <li><strong>Stocks (Equities):</strong> Represent ownership in a company and entitle the holder to a share of the company's profits and assets.</li>
-                            <li><strong>Bonds (Debt Securities):</strong> Fixed income instruments where the investor loans money to an entity (corporate or governmental) that borrows the funds for a defined period at a fixed interest rate.</li>
-                            <li><strong>Cash and Cash Equivalents:</strong> Highly liquid assets that include currency, bank deposits, and Treasury bills.</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- Layer 2 -->
-                <div class="layer-card">
-                    <h3 class="layer-title">Layer 2: Derivative Instruments</h3>
-                    <div class="layer-content">
-                        <ul>
-                            <li><strong>Options:</strong> Contracts that give the buyer the right, but not the obligation, to buy or sell an asset at a predetermined price within a specific period.
-                                <ul>
-                                    <li><strong>Call Options:</strong> Right to buy an asset.</li>
-                                    <li><strong>Put Options:</strong> Right to sell an asset.</li>
-                                </ul>
-                            </li>
-                            <li><strong>Futures:</strong> Standardized contracts obligating the buyer to purchase, or the seller to sell, an asset at a predetermined future date and price.</li>
-                            <li><strong>Swaps:</strong> Contracts to exchange cash flows or other financial instruments over time, such as interest rate swaps, currency swaps, and commodity swaps.
-                                <ul>
-                                    <li>Interest Rate Swaps</li>
-                                    <li>Currency Swaps</li>
-                                    <li>Commodity Swaps</li>
-                                </ul>
-                            </li>
-                            <li><strong>Forward Contracts:</strong> Non-standardized contracts between two parties to buy or sell an asset at a specified future date for a price agreed today.</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- Add more layers dynamically via JavaScript -->
-            </div>
+            <div id="layer-container"></div>
+            <div id="loading" class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+            <button id="scroll-next" class="scroll-button">Scroll to Next Layer</button>
         </section>
     </div>
 
