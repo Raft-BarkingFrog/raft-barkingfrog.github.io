@@ -2031,13 +2031,9 @@ const layers = [
     }
 ];
 
-// Layer Management with Dynamic Height Adjustment and Mousewheel Scrolling
+// Layer Management with Accordion Layout
 const layerContainer = document.getElementById('layer-container');
 const loading = document.getElementById('loading');
-let currentLayerIndex = 0;
-let isTransitioning = false; // Prevent multiple transitions at once
-let lastScrollTime = 0; // Debounce scroll events
-let scrollDelta = 0; // Accumulate scroll delta for smoother transitions
 
 // Debugging: Log layers array length to confirm it's populated
 console.log('Layers array length:', layers.length);
@@ -2048,87 +2044,55 @@ if (!layers || layers.length === 0) {
     loading.style.display = 'none';
     console.warn('Layers array is empty or undefined. Check script.js.');
 } else {
-    // Create a single layer card
-    const layerCard = document.createElement('div');
-    layerCard.className = 'layer-card';
-    layerContainer.appendChild(layerCard);
+    // Show loading spinner
+    loading.classList.add('active');
 
-    // Initial load of the first layer
-    updateLayerContent(0);
-}
-
-// Update the content of the single layer card with dynamic height adjustment
-function updateLayerContent(index) {
-    if (index >= layers.length || index < 0) return; // Out of bounds
-
-    const layer = layers[index];
-    const layerCard = layerContainer.querySelector('.layer-card');
-
-    // Create a temporary element to measure the new content height
-    const tempCard = document.createElement('div');
-    tempCard.className = 'layer-card';
-    tempCard.style.visibility = 'hidden';
-    tempCard.style.position = 'absolute';
-    tempCard.style.width = layerCard.offsetWidth + 'px'; // Match the current width
-    tempCard.innerHTML = `
-        <h3 class="layer-title">${layer.title}</h3>
-        <div class="layer-content">
-            <div class="content-wrapper">${layer.content}</div>
-        </div>
-    `;
-    document.body.appendChild(tempCard);
-    const newHeight = tempCard.offsetHeight;
-    document.body.removeChild(tempCard);
-
-    // Set the current height explicitly to start the transition
-    layerCard.style.height = layerCard.offsetHeight + 'px';
-
-    // Trigger the flipping animation
-    layerCard.classList.remove('active');
-    layerCard.classList.add('inactive');
-
+    // Render all layers as accordion items
     setTimeout(() => {
-        // Update height and content after the flip-out animation
-        layerCard.style.height = newHeight + 'px';
-        layerCard.innerHTML = `
-            <h3 class="layer-title">${layer.title}</h3>
-            <div class="layer-content">
-                <div class="content-wrapper">${layer.content}</div>
-            </div>
-        `;
-        layerCard.classList.remove('inactive');
-        layerCard.classList.add('active');
-        currentLayerIndex = index;
-        console.log('Updated layer to index:', currentLayerIndex, 'New height:', newHeight);
-        isTransitioning = false; // Allow new transitions
-        scrollDelta = 0; // Reset accumulated delta after transition
-    }, 300); // Match the CSS transition duration (0.3s)
+        const fragment = document.createDocumentFragment();
+        layers.forEach((layer, index) => {
+            const layerCard = document.createElement('div');
+            layerCard.className = 'layer-card';
+            layerCard.innerHTML = `
+                <h3 class="layer-title">${layer.title}</h3>
+                <div class="layer-content">${layer.content}</div>
+            `;
+            fragment.appendChild(layerCard);
+        });
+        layerContainer.appendChild(fragment);
+
+        // Hide loading spinner
+        loading.classList.remove('active');
+
+        // Add click handlers to expand/collapse
+        const layerTitles = document.querySelectorAll('.layer-title');
+        layerTitles.forEach((title, index) => {
+            title.addEventListener('click', () => {
+                const content = title.nextElementSibling;
+                const isActive = content.classList.contains('active');
+
+                // Collapse all other open layers
+                document.querySelectorAll('.layer-content.active').forEach((activeContent) => {
+                    activeContent.classList.remove('active');
+                    activeContent.previousElementSibling.classList.remove('active');
+                });
+
+                // Toggle the clicked layer
+                if (!isActive) {
+                    content.classList.add('active');
+                    title.classList.add('active');
+                }
+
+                console.log('Toggled layer:', index);
+            });
+        });
+
+        // Optionally, expand the first layer by default
+        if (layerTitles.length > 0) {
+            layerTitles[0].click();
+        }
+    }, 500); // Small delay for loading spinner visibility
 }
-
-// Handle mousewheel scrolling to change layers
-window.addEventListener('wheel', (event) => {
-    if (isTransitioning) return; // Prevent multiple transitions
-
-    const now = Date.now();
-    if (now - lastScrollTime < 300) {
-        // Accumulate scroll delta during debounce period
-        scrollDelta += event.deltaY;
-    } else {
-        scrollDelta = event.deltaY;
-    }
-    lastScrollTime = now;
-
-    // Threshold for changing layers (e.g., 100px of accumulated scroll)
-    const scrollThreshold = 100;
-
-    if (scrollDelta > scrollThreshold && currentLayerIndex < layers.length - 1) {
-        isTransitioning = true;
-        updateLayerContent(currentLayerIndex + 1);
-    } else if (scrollDelta < -scrollThreshold && currentLayerIndex > 0) {
-        isTransitioning = true;
-        updateLayerContent(currentLayerIndex - 1);
-    }
-});
 
 // Smooth Scrolling for Navbar
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
